@@ -12,6 +12,9 @@ namespace ShopOnline.Web.Pages.ComponentClass
         [Inject]
         public IProductService ProductService { get; set; }
 
+        [Inject]
+        public IShoppingCartService ShoppingCartService { get; set; }
+
         public ProductDto Product { get; set; }
 
         public string ErrorMessage { get; set; }
@@ -25,6 +28,18 @@ namespace ShopOnline.Web.Pages.ComponentClass
             catch (Exception ex)
             {
                 ErrorMessage = ex.Message;
+            }
+        }
+
+        protected async Task AddToCart_Click(CartIteamToAddDto cartIteamToAddDto)
+        {
+            try
+            {
+                var cartItemDemo = await ShoppingCartService.AddItem(cartIteamToAddDto);
+            }
+            catch (Exception)
+            {
+                //Log Exception
             }
         }
     }
