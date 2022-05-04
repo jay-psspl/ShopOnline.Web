@@ -33,7 +33,6 @@ namespace ShopOnline.API.Repositories
 
         public async Task<Product> GetItem(int id)
         {
-
             var product = await shopOnlineDbContext.Products.FindAsync(id);
             return product;
 

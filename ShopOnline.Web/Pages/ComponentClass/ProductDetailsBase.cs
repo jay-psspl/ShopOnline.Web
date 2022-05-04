@@ -15,9 +15,15 @@ namespace ShopOnline.Web.Pages.ComponentClass
         [Inject]
         public IShoppingCartService ShoppingCartService { get; set; }
 
+        [Inject]
+        public NavigationManager NavigationManager { get; set; }
+
+
         public ProductDto Product { get; set; }
 
+
         public string ErrorMessage { get; set; }
+
 
         protected override async Task OnInitializedAsync()
         {
@@ -35,11 +41,13 @@ namespace ShopOnline.Web.Pages.ComponentClass
         {
             try
             {
-                var cartItemDemo = await ShoppingCartService.AddItem(cartIteamToAddDto);
+                var cartItemDto = await ShoppingCartService.AddItem(cartIteamToAddDto);
+                NavigationManager.NavigateTo("/ShoppingCart"); 
             }
             catch (Exception)
             {
                 //Log Exception
+                throw;
             }
         }
     }
