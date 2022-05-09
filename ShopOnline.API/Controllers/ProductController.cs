@@ -22,15 +22,15 @@ namespace ShopOnline.API.Controllers
             try
             {
                 var products = await this.productRepository.GetItems();
-                var productCategories = await this.productRepository.GetCategories();
+                
 
-                if (products == null || productCategories == null)
+                if (products == null)
                 {
                     return NotFound();
                 }
                 else
                 {
-                    var productDtos = products.convertToDto(productCategories);
+                    var productDtos = products.convertToDto();
                     return Ok(productDtos);
                 }
             }
@@ -55,7 +55,7 @@ namespace ShopOnline.API.Controllers
                 {
                     var productCategory = await this.productRepository.GetCategory(product.CategoryId);
 
-                    var productDtos = product.convertToDto(productCategory);
+                    var productDtos = product.convertToDto();
 
                     return Ok(productDtos);
                 }
@@ -65,5 +65,42 @@ namespace ShopOnline.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error Occure during retriving data from the database");
             }
         }
+
+        [HttpGet]
+        [Route(nameof(GetProductCategories))]
+        public async Task<ActionResult<IEnumerable<ProductCategoryDto>>> GetProductCategories(int categoryId)
+        {
+            try
+            {
+                var productCategories = await productRepository.GetCategories();
+                var productCategoryDtos = productCategories.ConvertToDto();
+
+                return Ok(productCategoryDtos);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error Occure during retriving data from the database");
+            }
+
+        }
+
+        [HttpGet]
+        [Route("{categoryId}/GetItemsByCategory")]
+        public async Task<ActionResult<IEnumerable<ProductDto>>> GetItemsByCategory(int categoryId)
+        {
+            try
+            {
+                var products = await productRepository.GetItemsByCategory(categoryId);
+
+                var productDtos = products.convertToDto();
+
+                return Ok(productDtos);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error Occure during retriving data from the database");
+            }
+        }
+            
     }
 }

@@ -5,12 +5,23 @@ namespace ShopOnline.API.Extension
 {
     public static class DtoConversions
     {
-        public static IEnumerable<ProductDto> convertToDto(this IEnumerable<Product> products,
-            IEnumerable<ProductCategory> productCategories)
+
+        public static IEnumerable<ProductCategoryDto> ConvertToDto(this IEnumerable<ProductCategory> productCategories)
+        {
+
+            return (from ProductCategory in productCategories
+                    select new ProductCategoryDto
+                    {
+                        Id = ProductCategory.Id,
+                        Name = ProductCategory.Name,
+                        IconCSS = ProductCategory.IconCSS
+                    }).ToList();
+        }
+
+
+        public static IEnumerable<ProductDto> convertToDto(this IEnumerable<Product> products)
         {
             return (from product in products
-                    join productCategory in productCategories
-                    on product.CategoryId equals productCategory.Id
                     select new ProductDto
                     {
                         Id = product.Id,
@@ -19,13 +30,12 @@ namespace ShopOnline.API.Extension
                         ImageURL = product.ImageURL,
                         Price = product.Price,
                         Qty = product.Qty,
-                        CategoryId = product.CategoryId,
-                        CategoryName = productCategory.Name
+                        CategoryId = product.ProductCategory.Id,
+                        CategoryName = product.ProductCategory.Name
                     }).ToList();
         }
 
-        public static ProductDto convertToDto(this Product product,
-                                              ProductCategory productCategories)
+        public static ProductDto convertToDto(this Product product)
         {
             return new ProductDto
             {
@@ -35,8 +45,8 @@ namespace ShopOnline.API.Extension
                 ImageURL = product.ImageURL,
                 Price = product.Price,
                 Qty = product.Qty,
-                CategoryId = product.CategoryId,
-                CategoryName = product.Name
+                CategoryId = product.ProductCategory.Id,
+                CategoryName = product.ProductCategory.Name
             };
         }
 

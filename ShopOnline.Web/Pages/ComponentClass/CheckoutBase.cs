@@ -21,20 +21,29 @@ namespace ShopOnline.Web.Pages.ComponentClass
         [Inject]
         public IShoppingCartService ShoppingCartService { get; set; }
 
+        [Inject]
+        public IManageCartItemsLocalStorageService ManageCartItemsLocalStorageService { get; set; }
+
+        protected string DisplayButtons { get; set; } = "block";
+
 
         protected override async Task OnInitializedAsync()
         {
             try
             {
-                ShoppingCartItems = await ShoppingCartService.GetItems(Constant.HardCoded.UserId);
+                ShoppingCartItems = await ManageCartItemsLocalStorageService.GetCollection();
 
-                if(ShoppingCartItems != null)
+                if(ShoppingCartItems != null && ShoppingCartItems.Count() > 0)
                 {
                     Guid orderGuid = Guid.NewGuid();
 
                     PaymentAmount = ShoppingCartItems.Sum(p => p.TotalPrice);
                     TotalQty = ShoppingCartItems.Sum(p=> p.Qty);
                     PaymentDescription = $"O_{Constant.HardCoded.UserId}_{orderGuid}";
+                }
+                else
+                {
+                    DisplayButtons = "none";
                 }
             }
             catch (Exception)
